@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<settings>
+
+        <enabled>true</enabled> 				<!-- true|false -->
+        <posx>39.5</posx>                       <!-- X coordinate of the widget -->
+        <posy>32.6</posy>                       <!-- Y coordinate of the widget -->
+
+        <facebook_id>nc1eu</facebook_id>        <!-- The Facebook ID or username of your page -->
+
+        <icon_url>http://tmserver.eu/i/FB-f-Logo__blue_29.png</icon_url> <!-- any image with ratio 1:1.11 (width:height) -->
+</settings>
