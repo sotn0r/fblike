@@ -12,9 +12,8 @@
 
 Aseco::registerEvent('onStartup',                   'fbl_setup');
 Aseco::registerEvent('onSync',                      'fbl_sync');
-Aseco::registerEvent('onPlayerConnect',             'fbl_check');
+Aseco::registerEvent('onPlayerConnect',             'fbl_player');
 Aseco::registerEvent('onBeginMap',                  'fbl_check');
-Aseco::registerEvent('onBeginRound',                'fbl_check');
 Aseco::registerEvent('onEndRound',					'fbl_off');
 Aseco::registerEvent('onShutdown',					'fbl_shutdown');
 
@@ -28,17 +27,17 @@ function fbl_sync($aseco) {
     $aseco->plugin_versions[] = array(
         'plugin'   => 'plugin.fblike.php',
         'author'   => 'sotn0r.nc1.eu',
-        'version'   => '0.9.1'
+        'version'   => '0.9.2'
     );
 
 }
 
 function fbl_setup($aseco) { //Read fblike.xml and load settings
-	global $fbl, $json;
+    global $fbl, $json;
 
     $fbl = array();
 
-	if ($config = $aseco->xml_parser->parseXml('fblike.xml', true)) {
+    if ($config = $aseco->xml_parser->parseXml('fblike.xml', true)) {
 
         $config = $config['SETTINGS'];
 
@@ -57,11 +56,11 @@ function fbl_setup($aseco) { //Read fblike.xml and load settings
 
         $json = json_decode(file_get_contents("http://graph.facebook.com/".$fbl['facebook_id']));
 
-  
-	} else {
-		trigger_error('[FBLikes] Could not read/parse settings file fblike.xml!', E_USER_ERROR);
-		return false;
-	}
+
+    } else {
+        trigger_error('[FBLikes] Could not read/parse settings file fblike.xml!', E_USER_ERROR);
+        return false;
+    }
 }
 
 function fbl_check($aseco) { //Check map and load widgets
@@ -79,24 +78,34 @@ function fbl_check($aseco) { //Check map and load widgets
             $aseco->console('[FBLike] Facebook Graph error: ' . $json->error->message);
         }
 
-        fbl_buildWidget($aseco);
+        fbl_buildWidget($aseco, null);
     }
 }
 
-function fbl_off($aseco) {
-	global $fbl;
+function fbl_player($aseco, $player) { //Check map and load widgets
+    global $fbl;
 
-	$xml = '<manialink id="'.$fbl['manialink'].'00">
-	</manialink> <manialink id="'.$fbl['manialink'].'01">
-	</manialink>';
-		
-	$aseco->client->addCall('SendDisplayManialinkPage', array($xml, 0, false));
+    if ( $fbl['active'] )
+    {
+        fbl_buildWidget($aseco, $player);
+    }
 }
 
-function fbl_buildWidget($aseco) {
-	global $fbl, $json;
 
-	$xml = '<manialink id="'.$fbl['manialink'].'00">
+function fbl_off($aseco) {
+    global $fbl;
+
+    $xml = '<manialink id="'.$fbl['manialink'].'00">
+	</manialink> <manialink id="'.$fbl['manialink'].'01">
+	</manialink>';
+
+    $aseco->client->addCall('SendDisplayManialinkPage', array($xml, 0, false));
+}
+
+function fbl_buildWidget($aseco, $player = null) {
+    global $fbl, $json;
+
+    $xml = '<manialink id="'.$fbl['manialink'].'00">
   	  <frame posn="'.$fbl['position'].'">
   	    <quad posn="0 0 0" sizen="4.6 6.5" style="BgsPlayerCard" substyle="BgCardSystem" url="'.$json->link.'" />
         <quad posn="1.0 -0.44 0.1" sizen="2.5 2.78" image="'.$fbl['icon_url'].'"></quad>
@@ -106,12 +115,15 @@ function fbl_buildWidget($aseco) {
    	 </frame>
 		</manialink>';
 
-	$aseco->client->addCall('SendDisplayManialinkPage', array($xml, 0, false));
+    if ( $player == null )
+        $aseco->client->addCall('SendDisplayManialinkPage', array($xml, 0, false));
+    else
+        $aseco->client->addCall('SendDisplayManialinkPageToLogin', array($player->login, $xml, 0, false));
 }
 
 
 function fbl_shutdown($aseco) {
-	global $fbl;
+    global $fbl;
     fbl_off($aseco);
 
 }
