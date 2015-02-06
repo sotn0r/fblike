@@ -17,7 +17,11 @@ Aseco::registerEvent('onPlayerConnect',             'fbl_player');
 if ( defined('XASECO2_VERSION') )
     Aseco::registerEvent('onBeginMap',                  'fbl_check');
 else if ( defined('XASECO_VERSION') )
+{
     Aseco::registerEvent('onBeginRace',                  'fbl_check');
+    Aseco::registerEvent('onNewChallenge',                  'fbl_check');
+
+}
 
 
 Aseco::registerEvent('onEndRound',					'fbl_off');
