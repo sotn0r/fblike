@@ -13,7 +13,13 @@
 Aseco::registerEvent('onStartup',                   'fbl_setup');
 Aseco::registerEvent('onSync',                      'fbl_sync');
 Aseco::registerEvent('onPlayerConnect',             'fbl_player');
-Aseco::registerEvent('onBeginMap',                  'fbl_check');
+
+if ( defined('XASECO2_VERSION') )
+    Aseco::registerEvent('onBeginMap',                  'fbl_check');
+else if ( defined('XASECO_VERSION') )
+    Aseco::registerEvent('onBeginRace',                  'fbl_check');
+
+
 Aseco::registerEvent('onEndRound',					'fbl_off');
 Aseco::registerEvent('onShutdown',					'fbl_shutdown');
 
@@ -27,7 +33,7 @@ function fbl_sync($aseco) {
     $aseco->plugin_versions[] = array(
         'plugin'   => 'plugin.fblike.php',
         'author'   => 'sotn0r.nc1.eu',
-        'version'   => '0.9.2'
+        'version'   => '0.9.3'
     );
 
 }
