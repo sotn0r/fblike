@@ -6,7 +6,7 @@ Plugin for XASECO2 for Trackmania 2 to display a widget that shows how many peop
 
 # Installation
 
-Copy contents into your XASECO 2 folder.
+Copy contents into your XASECO or XASECO 2 folder.
 
 # Configuration
 
