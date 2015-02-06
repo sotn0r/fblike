@@ -62,7 +62,6 @@ function fbl_setup($aseco) { //Read fblike.xml and load settings
 
         $json = json_decode(file_get_contents("http://graph.facebook.com/".$fbl['facebook_id']));
 
-
     } else {
         trigger_error('[FBLikes] Could not read/parse settings file fblike.xml!', E_USER_ERROR);
         return false;
@@ -110,6 +109,10 @@ function fbl_off($aseco) {
 
 function fbl_buildWidget($aseco, $player = null) {
     global $fbl, $json;
+
+    if ( defined('XASECO_VERSION') )
+        $json->link = str_replace("https://", "http://", $json->link);
+
 
     $xml = '<manialink id="'.$fbl['manialink'].'00">
   	  <frame posn="'.$fbl['position'].'">
